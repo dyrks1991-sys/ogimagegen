@@ -1,0 +1,154 @@
+# UI Plan — OGImageGen
+
+> Version: 0.1.0
+> Date: 2026-07-07
+
+---
+
+## Pages
+
+| Path | Name | Description |
+|---|---|---|
+| `/` | Home | The entire product — single-page tool. No other routes. |
+
+---
+
+## Navigation Flow
+
+Single-page tool. No navigation required.
+
+```
+/ (Home)
+  ├── Empty state: DropZone CTA visible
+  └── File selected: controls + preview + download appear
+```
+
+---
+
+## Wireframe
+
+
+MOBILE (< 768px):
+┌─────────────────────────┐
+│  OGImageGen             │  ← header (backdrop-blur)
+├─────────────────────────┤
+│                         │
+│  ┌─────────────────────┐│
+│  │                     ││  CanvasPreview
+│  │   [1200×630 canvas] ││  (full width, 210px tall)
+│  │                     ││
+│  └─────────────────────┘│
+│                         │
+│  Title                  │
+│  ┌─────────────────────┐│  TextInputs
+│  │ Your Project Name   ││
+│  └───────────────── 18/80│
+│                         │
+│  Description            │
+│  ┌─────────────────────┐│
+│  │ The best tool for...││
+│  └──────────────── 30/120│
+│                         │
+│  Template               │
+│  ┌─────┐ ┌─────┐ ┌─────┐│  TemplateSelector
+│  │Dark │ │Light│ │Grad ││
+│  └─────┘ └─────┘ └─────┘│
+│                         │
+│  Colors                 │
+│  ■ Background  #111827  │  ColorPicker
+│  ■ Accent      #ffffff  │
+│                         │
+│  ┌─────────────────────┐│
+│  │    Download PNG     ││  DownloadButton
+│  └─────────────────────┘│
+└─────────────────────────┘
+
+DESKTOP (≥ 1024px):
+┌─────────────────────────────────────────────────────────┐
+│  OGImageGen                    Free · Instant · Private  │  header
+├────────────────────────────┬────────────────────────────┤
+│                            │                            │
+│  Title                     │  ┌──────────────────────┐ │
+│  ┌──────────────────────┐  │  │                      │ │
+│  │ Your Project Name    │  │  │  [Canvas 600×315px]  │ │
+│  └─────────────── 18/80 │  │  │                      │ │
+│                            │  └──────────────────────┘ │
+│  Description               │                            │
+│  ┌──────────────────────┐  │  ┌──────────────────────┐ │
+│  │ The best tool for    │  │  │    Download PNG       │ │
+│  │ developers.          │  │  └──────────────────────┘ │
+│  └────────────── 30/120 │  │                            │
+│                            │  1200 × 630 pixels         │
+│  Template                  │  Perfect for:              │
+│  ┌──────┐ ┌──────┐ ┌─────┐│  Twitter · LinkedIn · Slack│
+│  │ Dark │ │Light │ │Grad ││                            │
+│  └──────┘ └──────┘ └─────┘│                            │
+│                            │                            │
+│  Colors                    │                            │
+│  ■ Background  #111827     │                            │
+│  ■ Accent      #ffffff     │                            │
+└────────────────────────────┴────────────────────────────┘
+
+---
+
+## Component Hierarchy
+
+```
+page.tsx
+├── <header>
+│     Logo + tagline
+├── <main>
+│   ├── DropZone
+│   └── [when file selected]
+│         ├── FormatSelector
+│         ├── QualitySlider
+│         ├── ImagePreview
+│         │     ├── BeforePane (original)
+│         │     └── AfterPane  (compressed)
+│         ├── CompressionStats
+│         └── DownloadButton
+└── <footer>
+      Privacy note
+```
+
+---
+
+## Responsive Strategy
+
+| Breakpoint | Layout |
+|---|---|
+| Mobile (< 768px) | Single column. DropZone full-width. Preview stacked vertically. |
+| Tablet (768px–1023px) | Single column, wider previews. |
+| Desktop (≥ 1024px) | Two-column preview side by side. Controls centered, max-w-lg. |
+
+**Implementation:** Tailwind `md:` and `lg:` prefixes only. No media query JS.
+
+---
+
+## Design Tokens
+
+| Token | Value | Usage |
+|---|---|---|
+| Primary action | `bg-gray-900 text-white` | Download button |
+| Secondary action | `border border-gray-200` | Format selector |
+| Error state | `text-red-500` | Negative savings, errors |
+| Success state | `text-green-600` | Positive savings |
+| Surface | `bg-gray-50` | Page background |
+| Card | `bg-white border border-gray-200 rounded-xl shadow-sm` | Preview panels |
+
+---
+
+## Interaction Design
+
+| Interaction | Behavior |
+|---|---|
+| Drag file over DropZone | Border turns blue, background tints |
+| Drop file | Compression starts immediately (debounced 300ms) |
+| Move quality slider | Recompresses after 300ms debounce |
+| Change format | Recompresses immediately |
+| Click Download | File downloads, button shows "Downloading..." briefly |
+| Drop new file | Resets all state, restarts flow |
+
+---
+
+*Generated by DevOS Planner Agent v1 — 2026-07-07*
